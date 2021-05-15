@@ -7,22 +7,22 @@ var nodes = [
   {type:'person',id:'alex',name:'Alex', yearsInHole:'2013 - 2016',"image": "alex.png"},
   {type:'person',id:'david',name:'David', yearsInHole:'2011 - 2014',"image": "david.png"},
   {type:'person',id:'charlie',name:'Charlie', yearsInHole:'2016 - 2020',"image": "charlie.png"},
-  {type:'person',id:'jp',name:'JP', yearsInHole:'2011 - 2014',"image": "jp.png"},
-  {type:'person',id:'remi',name:'Remi', yearsInHole:'2011 - 2014',"image": "remi.png"},
-  {type:'person',id:'kyle',name:'Kyle', yearsInHole:'2011 - 2014',"image": "kyle.png"},
-  {type:'person',id:'sam',name:'Sam', yearsInHole:'2011 - 2014',"image": "sam.png"},
-  {type:'person',id:'duc',name:'Duc', yearsInHole:'2011 - 2014',"image": "duc.png"},
+  {type:'person',id:'jp',name:'JP', yearsInHole:'2017 - 2017',"image": "jp.png"},
+  {type:'person',id:'remi',name:'Remi', yearsInHole:'2017 - 2021',"image": "remi.png"},
+  {type:'person',id:'kyle',name:'Kyle', yearsInHole:'2018 - 2021',"image": "kyle.png"},
+  {type:'person',id:'sam',name:'Sam', yearsInHole:'2019 - 2020',"image": "sam.png"},
+  {type:'person',id:'duc',name:'Duc', yearsInHole:'2021 - 2021',"image": "duc.png"},
 ]
 
 var edges = [
   {id:1,source:'aseem',target:'chris',type:'og_hobbit'},
   {id:2,source:'aseem',target:'jeremy',type:'og_hobbit'},
   {id:3,source:'aseem',target:'pramod',type:'og_hobbit'},
-  {id:5,source:'aseem',target:'alex',type:'hobbit'},
-  {id:6,source:'aseem',target:'jp',type:'hobbit'},
   {id:8,source:'aseem',target:'david',type:'hobbit'},
   {id:9,source:'jeremy',target:'charlie',type:'hobbit'},
+  {id:5,source:'aseem',target:'alex',type:'hobbit'},
   {id:11,source:'pramod',target:'remi',type:'hobbit'},
+  {id:6,source:'aseem',target:'jp',type:'hobbit'},
   {id:12,source:'aseem',target:'kyle',type:'hobbit'},
   {id:13,source:'kyle',target:'sam',type:'hobbit'},
   {id:14,source:'remi',target:'duc',type:'hobbit'},
@@ -39,10 +39,9 @@ var width = window.innerWidth, // default width
 
 //drawing the svg and calling the hobbitHoleFamilyTree opject.
 
-var svg = d3.select('#forces').append("svg")
+var svg = d3.select('body').append("svg")
             .attr("width", width)
             .attr("height", height)
-            .attr("background-color","yellow")
             .call(myChart);
 
 function hobbitHoleFamilyTree() {
@@ -56,7 +55,7 @@ function hobbitHoleFamilyTree() {
     //set the repel force - may need to be tweaked for multiple data
     //the lower the strength the more they will repel away from each other
     //the larger the distance, the more apart they will be
-    var repelForce = d3.forceManyBody().strength(-10000).distanceMax(600)
+    var repelForce = d3.forceManyBody().strength(-6000).distanceMax(600)
                        .distanceMin(500);
 
     //start the simulation
@@ -83,7 +82,7 @@ function hobbitHoleFamilyTree() {
     }
 
     //define the links
-    var links = svg.selectAll("foo")
+    var links = svg.selectAll()
         .data(edges)
         .enter()
         .append("line")
@@ -91,23 +90,17 @@ function hobbitHoleFamilyTree() {
             if(d.type == 'og_hobbit'){
               return "4px"
             } else{
-              return "0.5px"
+              return "2px"
             }})
       .attr("stroke", function(d){ 
         if(d.type == 'og_hobbit'){
           return "gold"
         }
-        return "blue"
+        return "lightblue"
       });
 
-    //define tooltip
-    var tooltip = d3.select("body")
-      .append("div")
-      .attr("class", "tooltip")
-      .html("");
-
     //draw the nodes with drag functionality
-    var node = svg.selectAll("foo")
+    var node = svg.selectAll()
         .data(nodes)
         .enter()
         .append("g")
@@ -134,10 +127,7 @@ function hobbitHoleFamilyTree() {
     //append circles
     node.append("circle")
         .attr("class","circle")
-        .attr("r", function(d){
-            if (d.type == "family"){
-              return 30;
-            } else{return 60;}})
+        .attr("r", 60)
           .attr("fill",function(d,i){
             if(d.type == "family"){return "white"}
             else{return "url(#my_image" + i + ")"}})
@@ -203,12 +193,14 @@ function hobbitHoleFamilyTree() {
     //and define tick functionality
    simulation.on("tick", function() {
 
+            node.attr("transform", function(d){ return "translate(" + d.x + "," + d.y + ")"})
+          .attr("cx", function(d) { return d.x = Math.max(60, Math.min(width - 60, d.x)); })
+          .attr("cy", function(d) { return d.y = Math.max(60, Math.min(height - 60, d.y)); })
+
         links.attr("x1", function(d) {return d.source.x;})
              .attr("y1", function(d) {return d.source.y;})
              .attr("x2", function(d) {return d.target.x;})
              .attr("y2", function(d) {return d.target.y;})
-
-        node.attr("transform", function(d){ return "translate(" + d.x + "," + d.y + ")"})
     });
 
 
@@ -269,8 +261,6 @@ function hobbitHoleFamilyTree() {
 
         return d;
     }
-
-
   }
 
   my.width = function(value) {
