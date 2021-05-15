@@ -132,31 +132,19 @@ function hobbitHoleFamilyTree() {
         .attr("y", 0);
 
     //append circles
-    var circles = node.append("circle")
-                      .attr("class","circle")
-                      .attr("r", function(d){ //radius - bigger if family
-                          if (d.type == "family"){
-                            return 30;
-                          } else{return 60;}})
-                       .attr("fill",function(d,i){
-                         if(d.type == "family"){return "white"}
-                         else{return "url(#my_image" + i + ")"}})
-                        .attr("stroke", function(d){
-                          if (d.type == "family"){return "gold";
-                          } else { return "tan"}})
-                          .attr("stroke-width","2px")
-                          .on("mouseover", function(d){
-                            if(d.type !== "family"){
-                              //sets tooltip.  t_text = content in html
-                              t_text = "<strong>" + titleCase(d.name) + "</strong><br>Age: " + d.age
-                              if(d.profession !== undefined){
-                                //only add profession if it is defined
-                                t_text += "<br>Profession: " + d.profession}
-                              tooltip.html(t_text)
-                              return tooltip.style("visibility", "visible");
-                            }  })
-                           .on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left",(event.pageX+10)+"px");})
-                           .on("mouseout", function(){return tooltip.style("visibility", "hidden");});
+    node.append("circle")
+        .attr("class","circle")
+        .attr("r", function(d){
+            if (d.type == "family"){
+              return 30;
+            } else{return 60;}})
+          .attr("fill",function(d,i){
+            if(d.type == "family"){return "white"}
+            else{return "url(#my_image" + i + ")"}})
+          .attr("stroke", function(d){
+            if (d.type == "family"){return "gold";
+            } else { return "tan"}})
+            .attr("stroke-width","2px")
 
 
     //title case function used by tooltip and labels
@@ -168,11 +156,19 @@ function hobbitHoleFamilyTree() {
         return str.join(' ');
     }
 
-    //append labels
+    node.append("rect")
+      .attr("width", 120)
+      .attr("height", 50)
+      .attr("rx", 6)
+      .attr("x", -60)
+      .attr("y", 55)
+      .style("fill", function(d) { return "#fff"; })
+      .style("stroke", function(d) { return d3.rgb("#fff").darker(); })
+
     node.append("text")
       .style("fill", "black")
       .attr("dx", 0)
-      .attr("dy", 80)
+      .attr("dy", 75)
       .attr("text-anchor","middle")
       .text(function(d) {
           return titleCase(d.name);
