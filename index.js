@@ -90,13 +90,13 @@ function hobbitHoleFamilyTree() {
             if(d.type == 'og_hobbit'){
               return "4px"
             } else{
-              return "2px"
+              return "3px"
             }})
       .attr("stroke", function(d){ 
         if(d.type == 'og_hobbit'){
           return "gold"
         }
-        return "lightblue"
+        return "blue"
       });
 
     //draw the nodes with drag functionality
